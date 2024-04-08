@@ -3,28 +3,36 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Student Data</title>
+<title>CIT140 Project 5</title>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"></script>
 <style>
     table {
         border-collapse: collapse;
         width: 100%;
+        border: 1px solid black; /* Add black border */
     }
     th, td {
-        border: 1px solid #dddddd;
+        border: 1px solid black; /* Add black border */
         text-align: left;
         padding: 8px;
     }
     th {
-        background-color: #f2f2f2;
+        background-color: #C6E1F7;
+    }
+    /* Alternating row colors */
+    tbody tr:nth-child(even) {
+        background-color: #DAD8D8;
+    }
+    tbody tr:nth-child(odd) {
+        background-color: #FCF9F9;
     }
 </style>
 </head>
 <body>
     <h1>Select a Major</h1>
-    <button id="citButton">CIT Majors</button>
-    <button id="busButton">Business Majors</button>
+    <button id="btnCIT">CIT Majors</button>
+    <button id="btnMajors">Business Majors</button>
     <p id="filterText">We filter our dataset by major.</p>
     <div id="studentData"></div>
 
@@ -53,36 +61,28 @@
 
     <script>
         $(document).ready(function () {
-            $.ajax({
-                url: 'cit5students.json',
-                dataType: 'json',
-                success: function (data) {
-                    renderData(data);
-                }
-            });
-
-            function renderData(data) {
+            $.getJSON('https://raw.githubusercontent.com/MBozone/CIT140/main/cit5students.json', function(data) {
                 var source = $('#student-template').html();
                 var template = Handlebars.compile(source);
                 
-                $('#citButton').click(function () {
+                $('#btnCIT').click(function () {
                     var citStudents = data.filter(function (student) {
                         return student.major === 'CIT';
                     });
                     var html = template({ students: citStudents });
-                    $('#studentData').html(html);
+                    $('#studentData').empty().append(html);
                     $('#filterText').text('Displaying CIT Majors');
                 });
 
-                $('#busButton').click(function () {
+                $('#btnMajors').click(function () {
                     var busStudents = data.filter(function (student) {
                         return student.major === 'BUS';
                     });
                     var html = template({ students: busStudents });
-                    $('#studentData').html(html);
+                    $('#studentData').empty().append(html);
                     $('#filterText').text('Displaying Business Majors');
                 });
-            }
+            });
         });
     </script>
 </body>
