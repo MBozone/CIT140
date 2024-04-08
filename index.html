@@ -1,33 +1,46 @@
 <!DOCTYPE html>
-<html><head> <meta charset="UTF-8">
- <title>students</title>
+<html><head> <meta charset="UTF-8"> <title>Title of the document</title>
+<script 
+src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"></script>
+P a g e | 9
 </head>
-<body style='margin-left: 30px;'>
- <h1>CIT7 Students</h1>
- <p>CIT7 students: Exam Scores</p>
- <input type="button" id='btn' value="Get Student Scores">
- <div id="result"></div>
-<script>
-document.addEventListener('DOMContentLoaded', function() { // after page loads,
- document.querySelector('#btn').onclick = async function(){ 
- var response = await fetch('exam_scores.json'); // ajax GET request
+<body>
+ <h2>Handlebars templates to populate a table with an array of objects using Ajax</h2>
+ <h3>array of people objects as a table</h3>
+ <div id="peopleTable"></div>
+</body>
+<!-- The script element is used to define the Handlebars template -->
+ <script type="text/x-handlebars-template" id="tableTemplate">
+ <table cellspacing='12'>
+ <tr><th>Name</th><th>State</th><th>Age</th><th>Flavor</th></tr>
+ {{#each rows}}
+ <tr>
+ <td>{{name}}</td><td>{{state}}</td><td>{{age}}</td><td>{{flavor}}</td>
+ </tr>
+ {{/each}}
+ </table>
+ </script>
+ 
+<!-- Ajax request for an array of JSON-ized objects -->
+ <script>
+ window.onload = async function() {
+ var url = "hb6data.json"; // the data file
+ var response = await fetch(url);
  if(response.ok) {
- var data = await response.json(); // 'data' holds an array of objects
- var tableContents = "<table cellspacing='5'>" // generate table 
- tableContents += "<tr><td>Name</td><td>Midterm</td><td>Final</td></tr>";
- for(i = 0; i < data.length; i++) {
- tableContents += `<tr><td> ${data[i].name} </td>
- <td> ${data[i].midterm} </td> // make rows template literals
- <td> ${data[i].final} </td></tr>`;
- }
- tableContents += "</table>";
- document.querySelector('#result').innerHTML = tableContents;
+ var data = await response.json(); // variable named data receives an array of objects
+ var templateText = document.getElementById('tableTemplate').innerHTML; // Get 
+template text 
+ var compiledTemplateText = Handlebars.compile(templateText); // Compile the 
+Handlebars template
+ compiledHtml = compiledTemplateText({ rows: data }) // Evaluate the 
+template
+P a g e | 10
+ document.getElementById('peopleTable').innerHTML = compiledHtml; // put 
+html table into division
  }
  else {
- document.querySelector('#result').innerHTML = "Data not found";
- } 
- };
-});
+ document.querySelector('#peopleTable').innerHTML = "Data not found";
+ }
+ }
 </script>
-</body>
 </html>
